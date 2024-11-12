@@ -751,9 +751,9 @@ namespace sparrow
                                        }
                                    );
         const auto insert_pos = sparrow::next(data_buffer.cbegin(), offset_begin);
-        std::vector<uint8_t> casted_values;
-        std::ranges::copy(casted_joined_range, std::back_inserter(casted_values));
-        data_buffer.insert(insert_pos, casted_values.begin(), casted_values.end());
+        // std::vector<uint8_t> casted_values;
+        // std::ranges::copy(casted_joined_range, std::back_inserter(casted_values));
+        data_buffer.insert(insert_pos, casted_joined_range);
         const auto sizes_of_each_value = std::ranges::views::transform(
             values,
             [](const T& value) -> offset_type

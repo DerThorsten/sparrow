@@ -226,8 +226,8 @@ namespace sparrow
         constexpr iterator insert(const_iterator pos, const T& value);
         constexpr iterator insert(const_iterator pos, T&& value);
         constexpr iterator insert(const_iterator pos, size_type count, const T& value);
-        template <mpl::iterator_of_type<T> InputIt>
-        constexpr iterator insert(const_iterator pos, InputIt first, InputIt last);
+        template <class InputIt, class InputIt2>
+        constexpr iterator insert(const_iterator pos, InputIt first, InputIt2 last);
         template <std::ranges::input_range R>
             requires std::same_as<std::ranges::range_value_t<R>, T>
         constexpr iterator insert(const_iterator pos, R&& range);
@@ -793,8 +793,8 @@ namespace sparrow
     constexpr bool is_move_iterator_v = is_move_iterator<T>::value;
 
     template <class T>
-    template <mpl::iterator_of_type<T> InputIt>
-    constexpr auto buffer<T>::insert(const_iterator pos, InputIt first, InputIt last) -> iterator
+    template <class InputIt, class InputIt2>
+    constexpr auto buffer<T>::insert(const_iterator pos, InputIt first, InputIt2 last) -> iterator
     {
         SPARROW_ASSERT_TRUE(cbegin() <= pos && pos <= cend());
         const difference_type num_elements = std::distance(first, last);
@@ -805,7 +805,7 @@ namespace sparrow
         const iterator new_pos = std::next(begin(), offset);
         const iterator end_it = std::next(begin(), static_cast<difference_type>(old_size));
         std::move_backward(new_pos, end_it, end());
-        if constexpr (is_move_iterator_v<InputIt>)
+        if constexpr (is_move_iterator_v<InputIt> && is_move_iterator_v<InputIt2>)
         {
             std::uninitialized_move(first, last, new_pos);
         }
